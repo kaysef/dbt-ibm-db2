@@ -1,0 +1,148 @@
+'========================================================== test session starts ==========================================================
+platform win32 -- Python 3.8.2, pytest-6.2.4, py-1.10.0, pluggy-0.13.1
+rootdir: C:\users\ibm_dbt
+plugins: dash-1.21.0, dbt-adapter-0.5.1, logbook-1.2.0
+collected 1 item
+
+test\test-file.dbtspec F                                                                                                           [100%]
+
+=============================================================== FAILURES ================================================================ 
+________________________________________________________ usecase: test_dbt_empty ________________________________________________________ 
+Unknown error: Runtime Error
+  Database Error
+    ('The SQL contains 0 parameter markers, but 1 parameters were supplied', 'HY000')
+--------------------------------------------------------- Captured stdout call ---------------------------------------------------------- 
+Executing step 1/8
+2021-07-15 14:37:27.388713 (MainThread): Running with dbt=0.19.1
+2021-07-15 14:37:27.466819 (MainThread): running dbt with arguments Namespace(cls=<class 'dbt.task.seed.SeedTask'>, debug=True, defer=None, exclude=None, full_refresh=False, log_cache_events=False, log_format='default', models=None, partial_parse=False, profile='dbt-pytest', 
+profiles_dir='C:\\Users\\soma\\AppData\\Local\\Temp\\tmpt_ysnk4v', project_dir='C:\\Users\\soma\\AppData\\Local\\Temp\\tmpt_ysnk4v\\project', record_timing_info=None, rpc_method='seed', selector_name=None, show=False, single_threaded=False, state=None, strict=False, target='default', test_new_parser=False, threads=None, use_cache=True, use_colors=None, vars="_dbt_random_suffix: '210715143721759600465778'\n", version_check=True, warn_error=False, which='seed', write_json=True)
+2021-07-15 14:37:27.482351 (MainThread): Tracking: do not track
+2021-07-15 14:37:27.529246 (MainThread): Partial parsing not enabled
+2021-07-15 14:37:27.576135 (MainThread): Parsing macros\adapters.sql
+2021-07-15 14:37:27.610897 (MainThread): Parsing macros\catalog.sql
+2021-07-15 14:37:27.610897 (MainThread): Parsing macros\materializations\incremental\helpers.sql
+2021-07-15 14:37:27.610897 (MainThread): Parsing macros\materializations\incremental\incremental.sql
+2021-07-15 14:37:27.626555 (MainThread): Parsing macros\materializations\seed\seed.sql
+2021-07-15 14:37:27.642170 (MainThread): Parsing macros\materializations\table\table.sql
+2021-07-15 14:37:27.657804 (MainThread): Parsing macros\materializations\view\view.sql
+2021-07-15 14:37:27.673432 (MainThread): Parsing macros\core.sql
+2021-07-15 14:37:27.673432 (MainThread): Parsing macros\adapters\common.sql
+2021-07-15 14:37:27.756181 (MainThread): Parsing macros\etc\datetime.sql
+2021-07-15 14:37:27.777200 (MainThread): Parsing macros\etc\get_custom_alias.sql
+2021-07-15 14:37:27.779184 (MainThread): Parsing macros\etc\get_custom_database.sql
+2021-07-15 14:37:27.781187 (MainThread): Parsing macros\etc\get_custom_schema.sql
+2021-07-15 14:37:27.785188 (MainThread): Parsing macros\etc\is_incremental.sql
+2021-07-15 14:37:27.787186 (MainThread): Parsing macros\etc\query.sql
+2021-07-15 14:37:27.789199 (MainThread): Parsing macros\materializations\helpers.sql
+2021-07-15 14:37:27.795302 (MainThread): Parsing macros\materializations\common\merge.sql
+2021-07-15 14:37:27.827147 (MainThread): Parsing macros\materializations\incremental\helpers.sql
+2021-07-15 14:37:27.827147 (MainThread): Parsing macros\materializations\incremental\incremental.sql
+2021-07-15 14:37:27.827147 (MainThread): Parsing macros\materializations\seed\seed.sql
+2021-07-15 14:37:27.858397 (MainThread): Parsing macros\materializations\snapshot\snapshot.sql
+2021-07-15 14:37:27.911834 (MainThread): Parsing macros\materializations\snapshot\snapshot_merge.sql
+2021-07-15 14:37:27.911834 (MainThread): Parsing macros\materializations\snapshot\strategies.sql
+2021-07-15 14:37:27.943123 (MainThread): Parsing macros\materializations\table\table.sql
+2021-07-15 14:37:27.958744 (MainThread): Parsing macros\materializations\view\create_or_replace_view.sql
+2021-07-15 14:37:27.958744 (MainThread): Parsing macros\materializations\view\view.sql
+2021-07-15 14:37:27.974371 (MainThread): Parsing macros\schema_tests\accepted_values.sql
+2021-07-15 14:37:27.974371 (MainThread): Parsing macros\schema_tests\not_null.sql
+2021-07-15 14:37:27.974371 (MainThread): Parsing macros\schema_tests\relationships.sql
+2021-07-15 14:37:27.974371 (MainThread): Parsing macros\schema_tests\unique.sql
+2021-07-15 14:37:27.989994 (MainThread): Partial parsing not enabled
+2021-07-15 14:37:28.115940 (MainThread): Found 0 models, 0 tests, 0 snapshots, 0 analyses, 140 macros, 0 operations, 0 seed files, 0 sources, 0 exposures
+2021-07-15 14:37:28.116934 (MainThread): WARNING: Nothing to do. Try checking your model configs and model specification args
+2021-07-15 14:37:28.116934 (MainThread): Flushing usage events
+
+Executing step 2/8
+--------------------------------------------------------- Captured logbook call --------------------------------------------------------- 
+[DEBUG] dbt: Acquiring new ibm_dbt connection "__test".
+[DEBUG] dbt: Dropping schema "rdmart_test_210715143721759600465778".
+[DEBUG] dbt: Partial parsing not enabled
+[DEBUG] dbt: Parsing macros\adapters.sql
+[DEBUG] dbt: Parsing macros\catalog.sql
+[DEBUG] dbt: Parsing macros\materializations\incremental\helpers.sql
+[DEBUG] dbt: Parsing macros\materializations\incremental\incremental.sql
+[DEBUG] dbt: Parsing macros\materializations\seed\seed.sql
+[DEBUG] dbt: Parsing macros\materializations\table\table.sql
+[DEBUG] dbt: Parsing macros\materializations\view\view.sql
+[DEBUG] dbt: Parsing macros\core.sql
+[DEBUG] dbt: Parsing macros\adapters\common.sql
+[DEBUG] dbt: Parsing macros\etc\datetime.sql
+[DEBUG] dbt: Parsing macros\etc\get_custom_alias.sql
+[DEBUG] dbt: Parsing macros\etc\get_custom_database.sql
+[DEBUG] dbt: Parsing macros\etc\get_custom_schema.sql
+[DEBUG] dbt: Parsing macros\etc\is_incremental.sql
+[DEBUG] dbt: Parsing macros\etc\query.sql
+[DEBUG] dbt: Parsing macros\materializations\helpers.sql
+[DEBUG] dbt: Parsing macros\materializations\common\merge.sql
+[DEBUG] dbt: Parsing macros\materializations\incremental\helpers.sql
+[DEBUG] dbt: Parsing macros\materializations\incremental\incremental.sql
+[DEBUG] dbt: Parsing macros\materializations\seed\seed.sql
+[DEBUG] dbt: Parsing macros\materializations\snapshot\snapshot.sql
+[DEBUG] dbt: Parsing macros\materializations\snapshot\snapshot_merge.sql
+[DEBUG] dbt: Parsing macros\materializations\snapshot\strategies.sql
+[DEBUG] dbt: Parsing macros\materializations\table\table.sql
+[DEBUG] dbt: Parsing macros\materializations\view\create_or_replace_view.sql
+[DEBUG] dbt: Parsing macros\materializations\view\view.sql
+[DEBUG] dbt: Parsing macros\schema_tests\accepted_values.sql
+[DEBUG] dbt: Parsing macros\schema_tests\not_null.sql
+[DEBUG] dbt: Parsing macros\schema_tests\relationships.sql
+[DEBUG] dbt: Parsing macros\schema_tests\unique.sql
+[DEBUG] dbt: Using ibm_dbt connection "__test".
+[DEBUG] dbt: On __test: /* {"app": "dbt", "dbt_version": "0.19.1", "profile_name": "dbt-pytest", "target_name": "default", "connection_name": "master"} */
+BEGIN
+        FOR t AS
+      SELECT
+        TABLE_NAME,
+        TABLE_SCHEMA,
+        (CASE WHEN TABLE_TYPE LIKE '%TABLE%' THEN 'TABLE' ELSE 'VIEW' END) AS TABLE_TYPE
+      FROM QSYS2.TABLES t
+      WHERE TABLE_SCHEMA = UPPER('rdmart_test_210715143721759600465778')
+                DO
+                        PREPARE stmt FROM 'DROP '||t.TABLE_TYPE||' '||t.TABLE_SCHEMA||'.'||t.TABLE_NAME;
+                        EXECUTE stmt;
+        END FOR;
+    IF EXISTS (
+      SELECT SCHEMA_NAME
+      FROM QSYS2.SCHEMATA
+      WHERE SCHEMA_NAME = UPPER('rdmart_test_210715143721759600465778')
+    ) THEN
+      PREPARE stmt FROM 'DROP SCHEMA rdmart_test_210715143721759600465778 RESTRICT';
+      EXECUTE stmt;
+    END IF;
+  END
+
+
+[DEBUG] dbt: Opening a new connection, currently in state init
+[DEBUG] dbt: On __test: ROLLBACK
+[DEBUG] dbt: On __test: Close
+[DEBUG] dbt: pyodbc error: ('The SQL contains 0 parameter markers, but 1 parameters were supplied', 'HY000')
+[DEBUG] dbt: Error running SQL: /* {"app": "dbt", "dbt_version": "0.19.1", "profile_name": "dbt-pytest", "target_name": "default", "connection_name": "master"} */
+BEGIN
+        FOR t AS
+      SELECT
+        TABLE_NAME,
+        TABLE_SCHEMA,
+        (CASE WHEN TABLE_TYPE LIKE '%TABLE%' THEN 'TABLE' ELSE 'VIEW' END) AS TABLE_TYPE
+      FROM QSYS2.TABLES t
+      WHERE TABLE_SCHEMA = UPPER('rdmart_test_210715143721759600465778')
+                DO
+                        PREPARE stmt FROM 'DROP '||t.TABLE_TYPE||' '||t.TABLE_SCHEMA||'.'||t.TABLE_NAME;
+                        EXECUTE stmt;
+        END FOR;
+    IF EXISTS (
+      SELECT SCHEMA_NAME
+      FROM QSYS2.SCHEMATA
+      WHERE SCHEMA_NAME = UPPER('rdmart_test_210715143721759600465778')
+    ) THEN
+      PREPARE stmt FROM 'DROP SCHEMA rdmart_test_210715143721759600465778 RESTRICT';
+      EXECUTE stmt;
+    END IF;
+  END
+
+
+[DEBUG] dbt: Error running SQL: macro drop_schema
+[DEBUG] dbt: Rolling back transaction.
+======================================================== short test summary info ======================================================== 
+FAILED test/test-file.dbtspec::test_dbt_empty
+=========================================================== 1 failed in 7.85s =========================================================== 
