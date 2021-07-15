@@ -1,0 +1,12 @@
+target:
+  type: ibm_dbt
+  schema: "rdmart_test_{{ var('_dbt_random_suffix') }}"
+  threads: 1
+  system: syst
+  database: db
+  username: uid
+  password: pwd
+
+sequences:
+  test_dbt_empty: empty
+
