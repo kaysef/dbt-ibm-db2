@@ -1,99 +1,169 @@
+from contextlib import contextmanager
+
+import pyodbc
+import os
+import time
+from typing import Optional
+from functions import read_key
+
+import dbt.exceptions
+from dbt.adapters.base import Credentials
+from dbt.adapters.sql import SQLConnectionManager
+from dbt.adapters.ibm_od_dbt import __version__
+from dbt.contracts.connection import AdapterResponse
+
 from dataclasses import dataclass
 
 from dbt.adapters.base import Credentials
 from dbt.adapters.sql import SQLConnectionManager
-
-import pyodbc
-
-from contextlib import contextmanager
-import dbt.exceptions
-from dbt.adapters.base import Credentials
-from dbt.contracts.connection import AdapterResponse
-from dbt.contracts.connection import Connection
-from dbt.adapters.sql import SQLConnectionManager
 from dbt.logger import GLOBAL_LOGGER as logger
 
 @dataclass
-class IBMDbtCredentials(Credentials):
-    # Add credentials members here, like:
-    # host: str
-    # port: int
-    # driver: str
+class IBMDBtCredentials(Credentials):
+    
+    driver: str
     system: str
     database: str
-    username: str
-    password: str
+
+    UID: Optional[str] = None
+    PWD: Optional[str] = None
+    NAM: Optional[int] = 0
+
+    _ALIASES = {
+        "user": "UID",
+        "username": "UID",
+        "pass": "PWD",
+        "password": "PWD",
+        "naming": "NAM"
+    }
 
     @property
     def type(self):
-        return 'ibm_dbt'
+        return 'ibm_od_dbt'
 
     def _connection_keys(self):
-        # return an iterator of keys to pretty-print in 'dbt debug'.
-        # Omit fields like 'password'!
-        # raise NotImplementedError
-        return ('driver', 'system', 'database', 'naming', 'username')
+        return ('driver', 'database', 'NAM', 'UID')
 
 
-class IBMDbtConnectionManager(SQLConnectionManager):
-    TYPE = 'ibm_dbt'
-    
+class IBMDBtConnectionManager(SQLConnectionManager):
+    TYPE = 'ibm_od_dbt'
 
     @contextmanager
-    def exception_handler(self, sql: str):
+    def exception_handler(self, sql):
         try:
             yield
-        except pyodbc.DatabaseError as exc:
-            self.release()
-            logger.debug('pyodbc error: {}'.format(str(exc)))
-            logger.debug("Error running SQL: {}".format(sql))
-            raise dbt.exceptions.DatabaseException(str(exc))
-        except Exception as exc:
-            self.release()
-            logger.debug("Error running SQL: {}".format(sql))
+
+        except pyodbc.DatabaseError as e:
+            logger.debug("Database error: {}".format(str(e)))
+
+            try:
+                # attempt to release the connection
+                self.release()
+            except pyodbc.Error:
+                logger.debug("Failed to release connection!")
+                pass
+
+            raise dbt.exceptions.DatabaseException(str(e).strip()) from e
+
+        except Exception as e:
+            logger.debug(f"Error running SQL: {sql}")
             logger.debug("Rolling back transaction.")
-            raise dbt.exceptions.RuntimeException(str(exc))
+            self.release()
+            if isinstance(e, dbt.exceptions.RuntimeException):
+                raise
+
+            raise dbt.exceptions.RuntimeException(e)
 
     @classmethod
     def open(cls, connection):
-        if connection.state == 'open':
-            logger.debug('Connection is already open, skipping open.')
+
+        if connection.state == "open":
+            logger.debug("Connection is already open, skipping open.")
             return connection
 
         credentials = connection.credentials
 
         try:
-            con_str = "DRIVER={IBM i Access ODBC Driver}"
-            con_str += f";SYSTEM={credentials.system}"
-            con_str += f";DATABASE={credentials.database}"
-            con_str += f";NAM=0"
-            con_str += f";UID={credentials.username}"
-            con_str += f";PWD={credentials.password}"
+            con_str = []
+            con_str.append(f"DRIVER={{{credentials.driver}}}")
+            con_str.append(f"SYSTEM={credentials.system}")
+            con_str.append(f"DATABASE={credentials.database}")
+            con_str.append(f"NAM={credentials.NAM}")
+            con_str.append(f"UID={read_key(credentials.UID)}")
+            con_str.append(f"PWD={read_key(credentials.PWD)}")
 
-            handle = pyodbc.connect(con_str)
+            con_str_concat = ';'.join(con_str)
 
-            connection.state = 'open'
+            index = []
+            for i, elem in enumerate(con_str):
+                if 'pwd=' in elem.lower():
+                    index.append(i)
+
+            if len(index) !=0 :
+                con_str[index[0]]="PWD=***"
+
+            con_str_display = ';'.join(con_str)
+
+            logger.debug(f"Using connection string: {con_str_display}")
+
+            handle = pyodbc.connect(
+                con_str_concat
+            )
+
+            connection.state = "open"
             connection.handle = handle
+            logger.debug(f"Connected to db: {credentials.database}")
 
-        except Exception as exc:
-            connection.state = 'fail'
+        except pyodbc.Error as e:
+            logger.debug(f"Could not connect to db: {e}")
+
             connection.handle = None
-            logger.debug("Error connecting to database: {}".format(str(exc), b=con_str))
-            raise dbt.exceptions.FailedToConnectException(str(exc))
+            connection.state = "fail"
+
+            raise dbt.exceptions.FailedToConnectException(str(e))
 
         return connection
 
-    @classmethod
     def cancel(self, connection):
-        connection_name = connection.name
+        logger.debug("Cancel query")
+        pass
 
-        logger.info("Cancelling query '{}' ".format(connection_name))
+    def add_begin_query(self):
+        pass
 
-        try:
-            connection.handle.close()
-        except Exception as e:
-            logger.error('Error closing connection for cancel request')
-            raise Exception(str(e))
+    def add_commit_query(self):
+        pass
+
+    def add_query(self, sql, auto_begin=True, bindings=None, abridge_sql_log=False):
+
+        connection = self.get_thread_connection()
+
+        if auto_begin and connection.transaction_open is False:
+            self.begin()
+
+        logger.debug('Using {} connection "{}".'.format(self.TYPE, connection.name))
+
+        with self.exception_handler(sql):
+            if abridge_sql_log:
+                logger.debug("On {}: {}....".format(connection.name, sql[0:512]))
+            else:
+                logger.debug("On {}: {}".format(connection.name, sql))
+            pre = time.time()
+
+            cursor = connection.handle.cursor()
+
+            if bindings is None:
+                cursor.execute(sql)
+            else:
+                cursor.execute(sql, bindings)
+
+            logger.debug(
+                "SQL status: {} in {:0.2f} seconds".format(
+                    self.get_response(cursor), (time.time() - pre)
+                )
+            )
+            
+            return connection, cursor
 
     @classmethod
     def get_credentials(cls, credentials):
@@ -101,7 +171,6 @@ class IBMDbtConnectionManager(SQLConnectionManager):
 
     @classmethod
     def get_response(cls, cursor) -> AdapterResponse:
-
         message = 'OK'
         rows = cursor.rowcount
 
@@ -109,6 +178,19 @@ class IBMDbtConnectionManager(SQLConnectionManager):
             _message=message,
             rows_affected=rows
         )
+    
 
-    def add_begin_query(self):
-        pass
+    def execute(self, sql, auto_begin=True, fetch=False):
+        _, cursor = self.add_query(sql, auto_begin)
+        response = self.get_response(cursor)
+        if fetch:
+            while cursor.description is None:
+                if not cursor.nextset(): 
+                    break
+            table = self.get_result_from_cursor(cursor)
+        else:
+            table = dbt.clients.agate_helper.empty_table()
+
+        while cursor.nextset(): 
+            pass
+        return response, table
