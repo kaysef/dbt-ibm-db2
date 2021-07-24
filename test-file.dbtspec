@@ -1,0 +1,59 @@
+Command ['dbt', '--debug', '--no-partial-parse', 'seed', '--target', 'default', '--profile', 'dbt-pytest', '--profiles-dir', 'C:\\Users\\soma\\AppData\\Local\\Temp\\tmpbiz00mwe', '--project-dir', 'C:\\Users\\soma\\AppData\\Local\\Temp\\tmpbiz00mwe\\project', '--vars', "_dbt_random_suffix: '210724193754118918193869'\n"] failed, expected pass! Got rc=2
+------------------------------------------------------------ Captured stdout call ------------------------------------------------------------- 
+Executing step 1/5
+2021-07-24 19:38:15.986408 (MainThread): Running with dbt=0.19.1
+2021-07-24 19:38:16.591419 (MainThread): running dbt with arguments Namespace(cls=<class 'dbt.task.seed.SeedTask'>, debug=True, defer=None, exclude=None, full_refresh=False, log_cache_events=False, log_format='default', models=None, partial_parse=False, profile='dbt-pytest', profiles_dir='C:\\Users\\soma\\AppData\\Local\\Temp\\tmpbiz00mwe', project_dir='C:\\Users\\soma\\AppData\\Local\\Temp\\tmpbiz00mwe\\project', record_timing_info=None, rpc_method='seed', selector_name=None, show=False, single_threaded=False, state=None, strict=False, target='default', test_new_parser=False, threads=None, use_cache=True, use_colors=None, vars="_dbt_random_suffix: '210724193754118918193869'\n", version_check=True, warn_error=False, which='seed', write_json=True)
+2021-07-24 19:38:16.599423 (MainThread): Tracking: do not track
+2021-07-24 19:38:16.615423 (MainThread): Partial parsing not enabled
+2021-07-24 19:38:16.618430 (MainThread): Parsing macros\adapters.sql
+2021-07-24 19:38:16.650424 (MainThread): Parsing macros\catalog.sql
+2021-07-24 19:38:16.657421 (MainThread): Parsing macros\core.sql
+2021-07-24 19:38:16.663420 (MainThread): Parsing macros\adapters\common.sql
+2021-07-24 19:38:16.728425 (MainThread): Parsing macros\etc\datetime.sql
+2021-07-24 19:38:16.741421 (MainThread): Parsing macros\etc\get_custom_alias.sql
+2021-07-24 19:38:16.742424 (MainThread): Parsing macros\etc\get_custom_database.sql
+2021-07-24 19:38:16.745421 (MainThread): Parsing macros\etc\get_custom_schema.sql
+2021-07-24 19:38:16.748427 (MainThread): Parsing macros\etc\is_incremental.sql
+2021-07-24 19:38:16.751421 (MainThread): Parsing macros\etc\query.sql
+2021-07-24 19:38:16.753427 (MainThread): Parsing macros\materializations\helpers.sql
+2021-07-24 19:38:16.766422 (MainThread): Parsing macros\materializations\common\merge.sql
+2021-07-24 19:38:16.785428 (MainThread): Parsing macros\materializations\incremental\helpers.sql
+2021-07-24 19:38:16.788422 (MainThread): Parsing macros\materializations\incremental\incremental.sql
+2021-07-24 19:38:16.797422 (MainThread): Parsing macros\materializations\seed\seed.sql
+2021-07-24 19:38:16.827424 (MainThread): Parsing macros\materializations\snapshot\snapshot.sql
+2021-07-24 19:38:16.872425 (MainThread): Parsing macros\materializations\snapshot\snapshot_merge.sql
+2021-07-24 19:38:16.875429 (MainThread): Parsing macros\materializations\snapshot\strategies.sql
+2021-07-24 19:38:16.901430 (MainThread): Parsing macros\materializations\table\table.sql
+2021-07-24 19:38:16.911429 (MainThread): Parsing macros\materializations\view\create_or_replace_view.sql
+2021-07-24 19:38:16.919430 (MainThread): Parsing macros\materializations\view\view.sql
+2021-07-24 19:38:16.928430 (MainThread): Parsing macros\schema_tests\accepted_values.sql
+2021-07-24 19:38:16.934427 (MainThread): Parsing macros\schema_tests\not_null.sql
+2021-07-24 19:38:16.937426 (MainThread): Parsing macros\schema_tests\relationships.sql
+2021-07-24 19:38:16.940433 (MainThread): Parsing macros\schema_tests\unique.sql
+2021-07-24 19:38:16.952428 (MainThread): Partial parsing not enabled
+2021-07-24 19:38:16.985431 (MainThread): Acquiring new ibm_od_dbt connection "model.dbt_test_project.table_model".
+2021-07-24 19:38:17.001435 (MainThread): Acquiring new ibm_od_dbt connection "model.dbt_test_project.view_model".
+2021-07-24 19:38:17.037437 (MainThread): Flushing usage events
+2021-07-24 19:38:17.038437 (MainThread): Connection 'model.dbt_test_project.view_model' was properly closed.
+2021-07-24 19:38:17.038437 (MainThread): Encountered an error:
+2021-07-24 19:38:17.038437 (MainThread): Compilation Error
+  Invalid sources config given in models\schema.yml @ sources: {'name': 'raw', 'schema': Undefined, 'tables': [{'name': 'seed', 'identifier': 'base'}]} - at path ['schema']: Undefined is not valid under any of the given schemas
+2021-07-24 19:38:17.043428 (MainThread): jsonschema.exceptions.ValidationError: Undefined is not valid under any of the given schemas
+
+Failed validating 'oneOf' in schema['properties']['schema']:
+    {'oneOf': [{'type': 'string'}, {'type': 'null'}]}
+
+On instance['schema']:
+    Undefined
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\python-3.8.2\lib\site-packages\dbt\parser\schemas.py", line 772, in _target_from_dict
+    cls.validate(data)
+  File "c:\python-3.8.2\lib\site-packages\hologram\__init__.py", line 989, in validate
+    raise ValidationError.create_from(error) from error
+hologram.ValidationError: Undefined is not valid under any of the given schemas
+
+Failed validating 'oneOf' in schema['properties']['schema']:
+    {'oneOf': [{'type': 'string'}, {'type': 'null'}]}
